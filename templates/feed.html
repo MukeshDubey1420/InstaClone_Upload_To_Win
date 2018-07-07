@@ -1,0 +1,25 @@
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>instClone</title>
+</head>
+<body>
+    <form method="post" action="/post/">
+        {% csrf_token %}
+        <input type="submit" class="btn-default btn" value="Create Post">
+    </form>
+    {% for post in posts %}
+
+        <h3> Posted by: {{ post.user.username }}</h3>
+
+        <img style="display:inline-block; width:350px; height:300px;"
+                 src="{{ post.image_url }}" />
+
+        <span  style="display:inline-block;">{{ post.caption }}</span><br/><br/>
+
+    {% endfor %}
+</body>
+</html>
