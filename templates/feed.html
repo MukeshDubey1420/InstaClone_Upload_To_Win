@@ -4,12 +4,42 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Feeds Page</title>
+
+    <style>
+
+        input.sign-up , button.sign-up{
+	background: #3897f0;
+	width: 120px;
+	border: 4px  #3897f0;
+	padding: 8px;
+	color: white;
+	font-weight: bold;
+	border-radius: 5px;
+	margin-bottom: 10px;
+	margin-top: 25px;
+}
+
+        input.sign-up:hover , button.sign-up:hover{
+            transform: scale(1.1);
+        }
+
+
+    </style>
 </head>
 <body>
+<center>
+
+<h1>Hii User, Welcome to Your Feeds Page</h1>
+
+    <div>
+        <button type="button" class="sign-up"><a href="/logout" style="text-decoration: none; color: white;">Logout</a></button>
+    </div>
+
+
     <form method="post" action="/post/">
         {% csrf_token %}
-        <input type="submit" class="btn-default btn" value="Create Post">
+        <input type="submit" class="sign-up" value="Create Post">
     </form>
 
 
@@ -18,8 +48,7 @@
 
         <h3> Posted by: {{ post.user.username }} </h3>
         <p>[{{ post.created_on }}]</p>
-        <img style="display:inline-block; width:350px; height:300px;"
-             src="{{ post.image_url }}" /><br>
+        <img style="display:inline-block; width:350px; height:300px;" src="{{ post.image_url }}" /><br>
         <span  style="display:inline-block;">{{ post.caption }}</span><br/><br/>
         <div style="display:inline-block">
             {{ post.like_count }} likes this
@@ -53,5 +82,7 @@
         </div>
 
     {% endfor %}
+
+</center>
 </body>
 </html>

@@ -26,7 +26,7 @@
 # from django.contrib.auth.hashers import make_password,check_password
 
 
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect,HttpResponse
 from .forms import SignUpForm, LoginForm, PostForm, LikeForm, CommentForm
 from .models import UserModel, SessionToken, PostModel, LikeModel, CommentModel
 from django.contrib.auth.hashers import make_password, check_password
@@ -35,6 +35,7 @@ from datetime import timedelta
 from django.utils import timezone
 import os
 from imgurpython import ImgurClient
+from datetime import datetime
 # Create your views here.
 
 #Imgur Api keys
@@ -46,6 +47,7 @@ client_secret='2aded6fc536c97caca644aba2280729e931f9c23'
 
 
 def signup_view(request):
+  now_time = datetime.now()
   if request.method == "POST":
     form = SignUpForm(request.POST)
     if form.is_valid():
@@ -61,7 +63,7 @@ def signup_view(request):
   elif request.method == "GET":
     form = SignUpForm()
 
-  return render(request, 'index.html', {'form' : form})
+  return render(request, 'index.html', {'form' : form , 'now':now_time})
 
 
 
@@ -94,6 +96,11 @@ def login_view(request):
     response_data['form'] = form
     return render(request, 'login.html', response_data)
 
+def logout_view(request):
+    response = redirect("/")
+    response.delete_cookie("session_token")
+    return response
+
 
 def post_view(request):
     user = check_validation(request)
@@ -104,16 +111,15 @@ def post_view(request):
             if form.is_valid():
                 image = form.cleaned_data.get('image')
                 caption = form.cleaned_data.get('caption')
-                post = PostModel(user=user, image=image, caption=caption)
-                post.save()
-                path = os.path.join(BASE_DIR, post.image.url)
+                newpost = PostModel(user=user, image=image, caption=caption)
+                newpost.save()
+                path = os.path.join(BASE_DIR, newpost.image.url)
                 client = ImgurClient(client_id, client_secret)
-                post.image_url = client.upload_from_path(path,anon=True)['link']
-                post.save()
-
+                newpost.image_url = client.upload_from_path(path,anon=True)['link']
+                newpost.save()
                 return redirect('/feed/')
 
-        else:
+        elif request.method == 'GET':
             form = PostForm()
         return render(request, 'post.html', {'form' : form})
     else:
@@ -137,12 +143,15 @@ def check_validation(request):
 def feed_view(request):
     user = check_validation(request)
     if user:
-
         posts = PostModel.objects.all().order_by('created_on')
+        for post in posts:
+            existing_like = LikeModel.objects.filter(post=post, user=user).first()
+            if existing_like:
+                # post is already liked
+                post.is_liked = True
 
         return render(request, 'feed.html', {'posts': posts})
     else:
-
         return redirect('/login/')
 
 
