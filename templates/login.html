@@ -1,71 +1,81 @@
 {% load staticfiles %}
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Instagram Clone</title>
-<title>Login Page</title>
-<style>
-body{
-background: red;
-    background: -webkit-linear-gradient(blue, cyan);
-    background: -o-linear-gradient(blue, cyan);
-    background: -moz-linear-gradient(blue, cyan);
-    background: linear-gradient(blue, cyan);
+   <style>
+       body{
+	background: skyblue;
 }
-input{
-height:10px;
-width:240px;
-padding:20px;
-background:black;
-font-size:20px;
-color:white;
+.sign-up-form div {
+	margin-bottom: 10px;
+	padding: 3px;
 }
-.button
-{
-height:19px;
-width:200px;
-position:center;
-padding-top:9px;
-padding-bottom:30px;
-background:green;
-font-size:20px;
-color:white;
+.sign-up-form input{
+	padding: 6px;
+	width: 180px;
+	border: 1px solid #efefef;
 }
-</style>
+h1{
+	color: white;
+	font-style: italic;
+    font-size: 45px;
+    font-family: "Open Sans", Arial, Helvetica, Sans-Serif;
+}
+h2{
+	margin-top: 70px;
+	padding-top: 40px;
+    font-size: 30px;
+}
+form {
+	margin-top: 25px;
+	background: white;
+	width: 25%;
+	height: 400px;
+}
+input:hover{
+	transform: scale(1.1);
+}
+input.sign-up{
+	background: #3897f0;
+	width: 120px;
+	border: 4px  #3897f0;
+	padding: 8px;
+	color: white;
+	font-weight: bold;
+	border-radius: 5px;
+	margin-bottom: 10px;
+	margin-top: 5px;
+}
+a{
+	text-decoration: none;
+}
+       </style>
 </head>
-<body style="margin-top:150px;">
-<center>
-	<div class="main">
-            <h1> Instagram Clone</h1>
-            <h3>LOGIN</h3>
-    </div>
-    <div>
+<body>
+     <center>
+         <b><h1>Instagram Clone</h1></b>
 
-        <form method="post">
-            {% csrf_token %}
+      <form class="sign-up-form" method="Post">
+          {%csrf_token%}
+      <h2>Login</h2>
       <div>
-          <label for="username">Username: </label>
-          <input id="username" type="text" name="username" value={{ username }}>
+        <label for="username" style="font-size: 20px; padding: 5px; color: #1cacfc;">Username:   </label>
+          <input id="username" type="text" autofocus name="username" value={{ username }}>
+
       </div>
 
       <div>
-          <label for="password">Password: </label>
+      	 <label for="password" style="font-size: 20px; padding: 5px; color: #1cacfc;">Password:   </label>
           <input id="password" type="password" name="password" value={{ password }}>
       </div>
 
-      <input type="submit" value="Log In">
+          <input type="submit" class="sign-up" value="Log In">
 
-    </form>
-
-
-
-    </div><br><br>
-</center>
-
+      <hr style="width: 230px">
+      <p style="font-size: 18px;">Not having account?<a href="/login" style="color: #1cacfc;"> Sign up</a></p>
+      </form>
+     </center>
 </body>
 </html>
-
-
-
