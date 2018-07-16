@@ -8,6 +8,10 @@
 
     <style>
 
+         body{
+
+              cursor: pointer;
+        }
         input.sign-up , button.sign-up{
 	background: #3897f0;
 	width: 120px;
@@ -19,11 +23,32 @@
 	margin-bottom: 10px;
 	margin-top: 25px;
 }
+input.feedform{
 
-        input.sign-up:hover , button.sign-up:hover{
+	width: 180px;
+	border: 2px solid deepskyblue;
+	padding: 8px;
+	font-weight: bold;
+	border-radius: 5px;
+	margin-bottom: 10px;
+	margin-top: 5px;
+    margin-right: 5px;
+}
+
+
+        input.sign-up:hover, button.sign-up:hover{
             transform: scale(1.1);
         }
+         input:hover{
+            transform: scale(1.1);
+        }
+        /* Gradient transparent - color - transparent */
 
+hr{
+    border: 0;
+    height: 1px;
+    background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0));
+}
 
     </style>
 </head>
@@ -41,7 +66,7 @@
     </div>
 
 
-    <form method="post" action="/post/">
+    <form  class="sign-up" method="post" action="/post/">
         {% csrf_token %}
         <input type="submit" class="sign-up" value="Create Post">
     </form>
@@ -50,40 +75,61 @@
     {% for post in posts %}
 
 
-        <h3> Posted by: {{ post.user.username }} </h3>
-        <p>[{{ post.created_on }}]</p>
+        <h3 style="font-size: 16px; "> <b>This Image is Posted by: <span style="color: #1cacfc">{{ post.user.username }} </span></b></h3>
+        <p><b>On Date : - {{ post.created_on }}</b></p>
         <img style="display:inline-block; width:350px; height:300px;" src="{{ post.image_url }}" /><br>
         <span  style="display:inline-block;">{{ post.caption }}</span><br/><br/>
         <div style="display:inline-block">
-            {{ post.like_count }} likes this
+           <b> {{ post.like_count }} likes on this Post </b>
         </div>
         <div style="display:inline-block">
-            <form method="POST" action="/like/">
+            <form class = "feedform" method="POST" action="/like/">
               {% csrf_token %}
               <input type="hidden" name="post" value="{{ post.id }}" />
                 {% if post.has_liked %}
-                <input type="submit" class="btn btn-default" value="Unlike">
+                <input type="submit" class="btn btn-primary" value="Unlike">
                 {% else %}
-                <input type="submit" class="btn btn-default" value="Like">
+                <input type="submit" class="btn btn-primary" value="Like">
                 {% endif %}
             </form>
         </div>
 
+
         <div>
-            <form method="POST" action="/comment/">
+             <p style="font-size: 14px; padding: 3px; "><b> Categories: </b></p>
+            {% for category in post.categories %}
+            <span> {{ category.category_text }} </span>
+            {% endfor %}
+         </div>
+{#        <div>#}
+{##}
+{#            {% for category in post.categories %}#}
+{##}
+{#                {% if category.category_text and 'name' in category.category_text  %}#}
+{#                     <p style="font-size: 14px; padding: 3px; "><b> Categories: </b></p>#}
+{#                    <span> <p>{{ category.category_text }} </p></span>#}
+{#                {% else %}#}
+{#                <p>No Category found for this image.</p>#}
+{#                {% endif %}#}
+{#            {% endfor %}#}
+{#         </div>#}
+
+        <div>
+            <form class = "feedform" method="POST" action="/comment/">
                 {% csrf_token %}
                 <input type="hidden" name="post" value="{{ post.id }}" />
-                <input type="text" name="comment_text" id="comment_text" placeholder="Make a comment.." value="{{ comment_text }}">
+                <input class="feedform" type="text" name="comment_text" id="comment_text" autofocus placeholder="Make a comment.." value="{{ comment_text }}">
                 {{ comment_text }}
-                <input type="submit" class="btn-default btn" value="Comment">
+                <input type="submit" class="btn btn-success" value="Comment">
             </form>
         </div>
 
         <div>
             {% for comment in post.comments %}
-                <p><b>{{ comment.user.username }} [{{ comment.created_on }}]:</b> {{ comment.comment_text }}</p>
+                <p><b>{{ comment.user.username }} Posted on {{ comment.created_on }}  : <span style="color: #1cacfc"> {{ comment.comment_text }} </span> </b> </p>
             {% endfor %}
         </div>
+        <hr>
 
     {% endfor %}
 

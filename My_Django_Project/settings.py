@@ -139,4 +139,4 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 #Imgur Api keys
 client_id='bb757ba09859d12'
 client_secret='2aded6fc536c97caca644aba2280729e931f9c23'
-
+Clarifai_API_KEY= 'a0ea20f39c7940df8fff210c4798e3b4'

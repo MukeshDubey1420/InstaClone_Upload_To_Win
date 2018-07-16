@@ -33,7 +33,7 @@ class SessionToken(models.Model):
 
 
 class PostModel(models.Model):
-	user = models.ForeignKey(UserModel,blank=True, null=True, on_delete=models.SET_NULL,)
+	user = models.ForeignKey(UserModel, on_delete=models.DO_NOTHING,)
 	image = models.FileField(upload_to='user_images')
 	image_url = models.CharField(max_length=255)
 	caption = models.CharField(max_length=240)
@@ -77,3 +77,10 @@ class CommentModel(models.Model):
 
 	def __str__(self):
 		return self.user.username + " Commented " + self.comment_text
+
+
+class CategoryModel(models.Model):
+		post = models.ForeignKey(PostModel, on_delete=models.DO_NOTHING,)
+		category_text = models.CharField(max_length=200)
+		def __str__(self):
+			return self.user.username + " categoriesd " + self.category_text

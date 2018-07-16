@@ -29,14 +29,17 @@
 from django.shortcuts import render, redirect
 from django.http import JsonResponse,HttpResponse
 from .forms import SignUpForm, LoginForm, PostForm, LikeForm, CommentForm
-from .models import UserModel, SessionToken, PostModel, LikeModel, CommentModel
+from .models import UserModel, SessionToken, PostModel, LikeModel, CommentModel, CategoryModel
 from django.contrib.auth.hashers import make_password, check_password
-from My_Django_Project.settings import BASE_DIR,client_secret,client_id
+from My_Django_Project.settings import BASE_DIR,client_secret,client_id,Clarifai_API_KEY
 from datetime import timedelta
 from django.utils import timezone
 import os
 from imgurpython import ImgurClient
 from datetime import datetime
+
+from clarifai.rest import ClarifaiApp
+from clarifai import rest
 # Create your views here.
 
 
@@ -99,6 +102,27 @@ def logout_view(request):
     response = redirect("/")
     response.delete_cookie("session_token")
     return response
+
+def add_category(post):
+    app = ClarifaiApp(api_key=Clarifai_API_KEY)
+    model = app.models.get('logo')
+    response = model.predict_by_url(url=post.image_url)
+    if response["status"]["code"] == 10000:
+        if response["outputs"]:
+            if response["outputs"][0]["data"]:
+                if response["outputs"][0]["data"]["concepts"]:
+                    for index in range(0, len(response["outputs"][0]["data"]["concepts"])):
+                        category = CategoryModel(post=post, category_text = response["outputs"][0]["data"]["concepts"][index]["name"])
+                        category.save()
+                        print(category.category_text)
+                else:
+                    print ("No concepts list error.")
+            else:
+                print ("No data list error.")
+        else:
+            print ("No output lists error.")
+    else:
+        print ("Response code error.")
 
 
 def post_view(request):
@@ -197,3 +221,5 @@ def comment_view(request):
             return redirect('/feed/')
     else:
         return redirect('/login')
+
+
