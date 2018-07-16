@@ -3,8 +3,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Feeds Page</title>
+    {% include "head.html"%}
+    <title>InstaClone | Feeds Page</title>
 
     <style>
 
@@ -28,6 +28,10 @@
     </style>
 </head>
 <body>
+{% include "navbar2.html" %}
+
+<br>
+<br>
 <center>
 
 <h1>Hii User, Welcome to Your Feeds Page</h1>
@@ -84,5 +88,9 @@
     {% endfor %}
 
 </center>
+
+ {% include "footer.html" %}
+
+        {% include "scripts.html" %}
 </body>
 </html>

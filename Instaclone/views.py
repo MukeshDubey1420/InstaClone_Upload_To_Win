@@ -26,21 +26,18 @@
 # from django.contrib.auth.hashers import make_password,check_password
 
 
-from django.shortcuts import render, redirect,HttpResponse
+from django.shortcuts import render, redirect
+from django.http import JsonResponse,HttpResponse
 from .forms import SignUpForm, LoginForm, PostForm, LikeForm, CommentForm
 from .models import UserModel, SessionToken, PostModel, LikeModel, CommentModel
 from django.contrib.auth.hashers import make_password, check_password
-from My_Django_Project.settings import BASE_DIR
+from My_Django_Project.settings import BASE_DIR,client_secret,client_id
 from datetime import timedelta
 from django.utils import timezone
 import os
 from imgurpython import ImgurClient
 from datetime import datetime
 # Create your views here.
-
-#Imgur Api keys
-client_id='bb757ba09859d12'
-client_secret='2aded6fc536c97caca644aba2280729e931f9c23'
 
 
 
@@ -89,6 +86,8 @@ def login_view(request):
                     return response
                 else:
                     response_data['message'] = 'Incorrect Password! Please try again!'
+            else:
+                response_data['message'] = 'User does not exist!!!!'
 
     elif request.method == 'GET':
         form = LoginForm()
@@ -132,8 +131,8 @@ def check_validation(request):
     if request.COOKIES.get('session_token'):
         session = SessionToken.objects.filter(session_token=request.COOKIES.get('session_token')).first()
         if session:
-            time_to_live = session.created_on + timedelta(days=1)
-            if time_to_live > timezone.now():
+            # time_to_live = session.created_on + timedelta(days=1)
+            # if time_to_live > timezone.now():
                 return session.user
     else:
         return None
@@ -143,7 +142,7 @@ def check_validation(request):
 def feed_view(request):
     user = check_validation(request)
     if user:
-        posts = PostModel.objects.all().order_by('created_on')
+        posts = PostModel.objects.all().order_by('-created_on')
         for post in posts:
             existing_like = LikeModel.objects.filter(post=post, user=user).first()
             if existing_like:
@@ -161,13 +160,21 @@ def like_view(request):
         form = LikeForm(request.POST)
         if form.is_valid():
             post_id = form.cleaned_data.get('post').id
-
+            current_post = PostModel.objects.filter(id=post_id).first()
             existing_like = LikeModel.objects.filter(post_id=post_id, user=user).first()
 
             if not existing_like:
                 LikeModel.objects.create(post_id=post_id, user=user)
+                data = {
+                    'flag': True
+                }
+
             else:
                 existing_like.delete()
+                data = {
+                    'flag': False
+                }
+                return JsonResponse(data)
 
             return redirect('/feed/')
 

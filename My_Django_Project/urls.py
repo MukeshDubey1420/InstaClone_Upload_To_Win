@@ -34,8 +34,6 @@ from django.conf import settings
 from django.conf.urls.static import static
 from Instaclone.views import signup_view,login_view,feed_view,post_view,like_view, comment_view
 urlpatterns = [
-    url(r'^jet/', include('jet.urls', 'jet')),       # Django JET URLS
-    url(r'^jet/dashboard/', include('jet.dashboard.urls', 'jet-dashboard')),  # Django JET dashboard URLS
     url(r'^admin/', admin.site.urls),
     url('post/', post_view),
     url('feed/', feed_view),
