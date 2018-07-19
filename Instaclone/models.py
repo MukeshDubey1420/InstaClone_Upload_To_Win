@@ -17,7 +17,7 @@ class UserModel(models.Model):
 	created_on = models.DateTimeField(auto_now_add=True)
 	updated_on = models.DateTimeField(auto_now=True)
 	def __str__(self):
-		return self.name + " Has Username " + str(self.username)
+		return self.name + " Has Username:-  " + str(self.username)
 
 
 class SessionToken(models.Model):
@@ -30,7 +30,7 @@ class SessionToken(models.Model):
 	def create_token(self):
 		self.session_token = uuid.uuid4()
 	def __str__(self):
-		return self.user.username + " LOGGED IN AT " + str(self.created_on)
+		return self.user.username + " Logged in at " + str(self.created_on)
 
 
 class PostModel(models.Model):
